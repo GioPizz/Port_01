@@ -1,50 +1,50 @@
 # Asset Management Research Pipeline
 
-Progetto di ricerca applicata alla gestione patrimoniale: una pipeline end‑to‑end che scarica dati di mercato, costruisce portafogli factor‑based, esegue backtest walk‑forward e genera un report automatico con metriche di rischio e grafici. L’obiettivo è mostrare un approccio professionale e riproducibile, adatto a un contesto di ammissione a Master in Finance.
+Applied research project in asset management: an end‑to‑end pipeline that downloads market data, builds factor‑based portfolios, runs walk‑forward backtests, and generates an automatic report with risk metrics and charts. The goal is to demonstrate a professional and reproducible workflow, suitable for a Master in Finance application.
 
-> In breve: **dati → fattori → portafogli → backtest → report**.
-
----
-
-## Perché esiste questo progetto
-Volevo creare un progetto che unisse teoria finanziaria e implementazione concreta:
-- **mostrare comprensione dei modelli fattoriali** (CAPM, Fama‑French);
-- **costruire portafogli** con regole chiare (equal‑weight, risk‑parity, mean‑variance);
-- **valutare le performance** con metodi realistici (walk‑forward, costi di transazione, drawdown);
-- **documentare risultati** con un report leggibile anche per un profilo non tecnico.
-
-## Caratteristiche
-- **Data layer**: download con caching in parquet, gestione missing/outlier
-- **Factor models**: CAPM + Fama-French (o proxy) con stima robusta (HC3)
-- **Portfolio construction**: equal-weight, risk-parity, mean-variance
-- **Backtesting**: walk-forward, transaction costs, turnover, drawdown, rolling metrics
-- **Risk**: VaR/CVaR, stress test (2020, 2022)
-- **Output**: report HTML con grafici e tabelle
+> In short: **data → factors → portfolios → backtest → report**.
 
 ---
 
-## Che dati utilizza
-Per default il tool scarica dati **daily** da Yahoo Finance via `yfinance` (es. ETF come SPY, QQQ, EFA, EEM, IWM).
-Quando l’accesso internet non è disponibile, può usare un **dataset locale di fallback** (`data/sample_prices.csv`) per garantire la riproducibilità.
+## Why this project
+I wanted a project that blends financial theory with hands‑on implementation:
+- **show understanding of factor models** (CAPM, Fama‑French);
+- **build portfolios** with clear rules (equal‑weight, risk‑parity, mean‑variance);
+- **evaluate performance** with realistic methods (walk‑forward, transaction costs, drawdown);
+- **document results** with a report readable by both technical and non‑technical audiences.
 
-I dati vengono:
-- puliti (outlier e missing values),
-- trasformati in rendimenti,
-- cache‑ati in formato parquet per velocizzare esecuzioni successive.
-
----
-
-## Come funziona la pipeline (overview)
-1. **Download & cleaning** dei prezzi.
-2. **Calcolo rendimenti** e costruzione fattori (CAPM/FF o proxy).
-3. **Costruzione portafoglio** (equal‑weight, risk‑parity, mean‑variance).
-4. **Backtest walk‑forward** con costi di transazione e turnover.
-5. **Analisi del rischio** (VaR/CVaR, drawdown, stress test 2020/2022).
-6. **Report automatico** in HTML con grafici e tabelle.
+## Key features
+- **Data layer**: download with parquet caching, missing/outlier handling
+- **Factor models**: CAPM + Fama‑French (or proxy) with robust SE (HC3)
+- **Portfolio construction**: equal‑weight, risk‑parity, mean‑variance
+- **Backtesting**: walk‑forward, transaction costs, turnover, drawdown, rolling metrics
+- **Risk**: VaR/CVaR, stress tests (2020, 2022)
+- **Output**: HTML report with charts and tables
 
 ---
 
-## Struttura repo
+## Data sources
+By default the tool downloads **daily** data from Yahoo Finance via `yfinance` (e.g., ETFs like SPY, QQQ, EFA, EEM, IWM).
+When internet access is not available, it can use a **local fallback dataset** (`data/sample_prices.csv`) for reproducibility.
+
+The data are:
+- cleaned (outliers and missing values),
+- converted to returns,
+- cached in parquet format to speed up subsequent runs.
+
+---
+
+## Pipeline overview
+1. **Download & clean** prices.
+2. **Compute returns** and build factors (CAPM/FF or proxy).
+3. **Construct portfolios** (equal‑weight, risk‑parity, mean‑variance).
+4. **Walk‑forward backtest** with transaction costs and turnover.
+5. **Risk analysis** (VaR/CVaR, drawdown, stress tests 2020/2022).
+6. **Automatic report** in HTML with charts and tables.
+
+---
+
+## Repository structure
 ```
 .
 ├── data/
@@ -61,51 +61,51 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Uso rapido
-Genera un report HTML con strategia risk-parity:
+## Quick start
+Generate an HTML report with a risk‑parity strategy:
 ```bash
 python scripts/generate_report.py --tickers SPY QQQ EFA EEM IWM --start 2015-01-01 --end 2024-12-31
 ```
 
-Usa i fattori Fama-French (richiede download internet):
+Use Fama‑French factors (requires internet download):
 ```bash
 python scripts/generate_report.py --use-ff
 ```
 
-Il report sarà salvato in `reports/report.html` con grafici allegati.
+The report is saved in `reports/report.html` with charts.
 
-Se il download online non è disponibile, lo script usa `data/sample_prices.csv` come fallback.
-Puoi forzare un dataset locale con:
+If online download is not available, the script uses `data/sample_prices.csv` as a fallback.
+You can force a local dataset with:
 ```bash
 python scripts/generate_report.py --fallback-csv data/sample_prices.csv
 ```
-Per evitare il download online e usare solo il dataset locale:
+To skip online downloads entirely:
 ```bash
 python scripts/generate_report.py --offline --fallback-csv data/sample_prices.csv
 ```
 
-## Notebook demo
-Apri `notebooks/demo.ipynb` per un walkthrough guidato della pipeline.
+## Demo notebook
+Open `notebooks/demo.ipynb` for a guided walkthrough of the pipeline.
 
 ---
 
-## Interpretazione dei risultati (esempio)
-- **Risk/Return**: confronta ritorno annualizzato e volatilità per capire il profilo rischio.
-- **Drawdown**: verifica quanto il portafoglio soffre nei periodi di crisi.
-- **Fattori**: controlla beta e alpha per capire esposizioni e performance “extra”.
+## Interpreting results (example)
+- **Risk/Return**: compare annualized return and volatility to assess the risk profile.
+- **Drawdown**: check how the portfolio behaves in crisis periods.
+- **Factors**: inspect betas and alpha to understand exposures and “extra” performance.
 
-> Nota: i risultati dipendono dai tickers scelti e dal periodo analizzato.
+> Note: results depend on tickers and the chosen sample period.
 
 ---
 
-## Limiti e possibili estensioni
-Questo progetto è volutamente semplice e trasparente. Alcune estensioni naturali:
-- ottimizzazione più avanzata dei pesi (constraints, regularization);
-- gestione di universe dinamici e survivorship bias;
-- validazione cross‑market o multi‑asset;
-- report in PDF automatizzato.
+## Limitations and possible extensions
+This project is intentionally simple and transparent. Natural extensions include:
+- more advanced weight optimization (constraints, regularization);
+- dynamic universes and survivorship bias handling;
+- cross‑market or multi‑asset validation;
+- automated PDF reporting.
 
-## Suggerimenti
-- Aggiungi ETF settoriali o fattoriali per migliorare la diversificazione.
-- Modifica `cost-bps` per testare scenari di costi diversi.
-- Puoi esportare il report HTML in PDF con strumenti esterni (es. browser).
+## Suggestions
+- Add sector or factor ETFs to improve diversification.
+- Adjust `cost-bps` to test different transaction‑cost scenarios.
+- Export the HTML report to PDF with external tools (e.g., browser print).
