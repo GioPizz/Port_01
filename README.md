@@ -1,31 +1,14 @@
-# Asset Management Research Pipeline
+# Asset Management Research Tool
 
-Pipeline end-to-end per ricerca quantitativa: scarico dati, costruzione portafogli, backtest e report automatico.
+Ricerca quantitativa: scarico dati, costruzione portafogli, backtest e report automatico.
 
 ## Caratteristiche
-- **Data layer**: download con caching in parquet, gestione missing/outlier
-- **Factor models**: CAPM + Fama-French (o proxy) con stima robusta (HC3)
-- **Portfolio construction**: equal-weight, risk-parity, mean-variance
-- **Backtesting**: walk-forward, transaction costs, turnover, drawdown, rolling metrics
-- **Risk**: VaR/CVaR, stress test (2020, 2022)
-- **Output**: report HTML con grafici e tabelle
-
-## Struttura repo
-```
-.
-├── data/
-├── notebooks/
-├── reports/
-├── scripts/
-└── src/asset_pipeline/
-```
-
-## Setup
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+1) **Data layer**: download con caching in parquet, gestione missing/outlier
+2) **Factor models**: CAPM + Fama-French (o proxy) con stima robusta (HC3)
+3) **Portfolio construction**: equal-weight, risk-parity, mean-variance
+4) **Backtesting**: walk-forward, transaction costs, turnover, drawdown, rolling metrics
+5) **Risk**: VaR/CVaR, stress test (2020, 2022)
+6) **Output**: report HTML con grafici e tabelle
 
 ## Uso rapido
 Genera un report HTML con strategia risk-parity:
@@ -51,7 +34,7 @@ python scripts/generate_report.py --offline --fallback-csv data/sample_prices.cs
 ```
 
 ## Notebook demo
-Apri `notebooks/demo.ipynb` per un walkthrough guidato della pipeline.
+Apri `notebooks/demo.ipynb` per una spiegazione guidata su come funziona.
 
 ## Interpretazione risultati (esempio)
 - **Risk/Return**: confronta ritorno annualizzato e volatilità per capire il profilo rischio.
